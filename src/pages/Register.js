@@ -1,7 +1,7 @@
-import {useState, useEffect, useContext} from "react"
+import {useState, useEffect} from "react"
+import { useAppContext } from "../context/appContext"
 import Wrapper from "../assets/wrappers/RegisterPage"
 import {Alert, FormRow} from "../components"
-import { AppContext } from "../context/appContext"
 
 const initialState = {
   name: '',
@@ -12,9 +12,11 @@ const initialState = {
 
 
 
+
 const Register = () => {
-  const {isLoading, showAlert} = useContext(AppContext)
+  const {isLoading, showAlert, displayAlert} = useAppContext()
   const [values, setValues] = useState(initialState)
+
 
   const handleChange = (event) => {
     const {name, value} = event.target
@@ -26,14 +28,18 @@ const Register = () => {
   
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(event.target.value)
+    const {name, email, password, isMember} = values
+    if (!email || !password || (!isMember && !name)) {
+      displayAlert()
+    }
+    else {console.log(values)}
+ 
   }
 
   const toggleMember = () => {
     setValues({ ...values, isMember: !values.isMember })
   }
 
-  console.log(values)
 
   return (
     <Wrapper className = "full-page">
@@ -75,7 +81,7 @@ const Register = () => {
             onClick = {toggleMember}
             className = "member-btn"
             
-          >{values.isMember ? "Login": "register"}
+          >{!values.isMember ? "Login": "register"}
 
           </button>
         </p>
